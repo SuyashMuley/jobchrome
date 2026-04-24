@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+
+# Environment
+.env
+*.env.local
+
+# macOS
+.DS_Store
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Chrome extension — built artifacts (if you add a build step later)
+extension/dist/
+
+# Logs
+*.log

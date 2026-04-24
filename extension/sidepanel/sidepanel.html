@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JobChrome</title>
+  <link rel="stylesheet" href="sidepanel.css" />
+</head>
+<body>
+  <header>
+    <span class="logo">JobChrome</span>
+    <nav class="tabs">
+      <button class="tab-btn active" data-tab="analyze">Analyze</button>
+      <button class="tab-btn" data-tab="preferences">Preferences</button>
+      <button class="tab-btn" data-tab="settings">Settings</button>
+    </nav>
+  </header>
+
+  <!-- ───────────── ANALYZE TAB ───────────── -->
+  <section id="tab-analyze" class="tab-content active">
+    <div class="section-card">
+      <label class="field-label">Resume</label>
+
+      <!-- PDF upload zone -->
+      <div class="upload-zone" id="upload-zone">
+        <input type="file" id="pdf-input" accept="application/pdf" hidden />
+        <span class="upload-icon">📄</span>
+        <span id="upload-label">Drop PDF here or <u>browse</u></span>
+        <span id="upload-status" class="upload-status"></span>
+      </div>
+
+      <div class="divider"><span>or paste text</span></div>
+
+      <textarea id="resume-input" placeholder="Paste your resume here…" rows="6"></textarea>
+
+      <div class="row">
+        <label class="field-label" style="margin:0">LLM</label>
+        <select id="provider-select">
+          <option value="claude">Claude (Anthropic)</option>
+          <option value="grok">Grok (xAI)</option>
+        </select>
+      </div>
+
+      <button id="analyze-btn" class="primary-btn">Analyze This Job</button>
+      <p id="status-msg" class="status-msg"></p>
+    </div>
+
+    <!-- Results — hidden until analysis runs -->
+    <div id="results" class="hidden">
+      <!-- ATS Score -->
+      <div class="section-card">
+        <div class="score-row">
+          <div class="score-ring" id="score-ring">
+            <svg viewBox="0 0 44 44">
+              <circle class="track" cx="22" cy="22" r="18" />
+              <circle class="fill" id="score-fill" cx="22" cy="22" r="18"
+                stroke-dasharray="113.1" stroke-dashoffset="113.1" />
+            </svg>
+            <span class="score-num" id="score-num">0</span>
+          </div>
+          <div class="score-meta">
+            <h3 id="rec-badge" class="rec-badge">—</h3>
+            <p id="reasoning" class="reasoning-text"></p>
+          </div>
+        </div>
+
+        <div class="breakdown-grid">
+          <div class="breakdown-item">
+            <span>Keywords</span>
+            <div class="bar-wrap"><div class="bar" id="bar-keyword"></div></div>
+            <span class="bar-val" id="val-keyword">0</span>
+          </div>
+          <div class="breakdown-item">
+            <span>Skills</span>
+            <div class="bar-wrap"><div class="bar" id="bar-skills"></div></div>
+            <span class="bar-val" id="val-skills">0</span>
+          </div>
+          <div class="breakdown-item">
+            <span>Experience</span>
+            <div class="bar-wrap"><div class="bar" id="bar-exp"></div></div>
+            <span class="bar-val" id="val-exp">0</span>
+          </div>
+          <div class="breakdown-item">
+            <span>Pref. Match</span>
+            <div class="bar-wrap"><div class="bar" id="bar-pref"></div></div>
+            <span class="bar-val" id="val-pref">0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cold Email -->
+      <div class="section-card" id="cold-email-card">
+        <div class="collapsible-header" id="cold-email-toggle">
+          <span>Cold Email</span>
+          <span class="chevron">▸</span>
+        </div>
+        <div class="collapsible-body hidden" id="cold-email-body">
+          <p class="field-label">Subject</p>
+          <div class="copy-row">
+            <input type="text" id="email-subject" readonly />
+            <button class="copy-btn" data-target="email-subject">Copy</button>
+          </div>
+          <p class="field-label" style="margin-top:10px">Body</p>
+          <div class="copy-row align-start">
+            <textarea id="email-body" readonly rows="7"></textarea>
+            <button class="copy-btn" data-target="email-body">Copy</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recruiter Search -->
+      <div class="section-card">
+        <p class="field-label">LinkedIn Recruiter Search</p>
+        <div class="copy-row">
+          <input type="text" id="recruiter-query" readonly />
+          <button class="copy-btn" data-target="recruiter-query">Copy</button>
+        </div>
+        <a id="recruiter-link" class="recruiter-link" target="_blank" rel="noopener">
+          Open in LinkedIn →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────────── PREFERENCES TAB ───────────── -->
+  <section id="tab-preferences" class="tab-content hidden">
+    <div class="section-card">
+      <label class="field-label">Target Domains</label>
+      <div class="chips-wrap" id="chips-domains">
+        <button class="chip" data-value="Software Engineering">Software Engineering</button>
+        <button class="chip" data-value="Data Science">Data Science</button>
+        <button class="chip" data-value="ML / AI">ML / AI</button>
+        <button class="chip" data-value="DevOps / Platform">DevOps / Platform</button>
+        <button class="chip" data-value="Product">Product</button>
+        <button class="chip" data-value="Design">Design</button>
+        <button class="chip" data-value="Finance / Quant">Finance / Quant</button>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <label class="field-label">Tech Stack</label>
+      <div class="tag-input-wrap" id="tag-wrap-tech">
+        <div class="tags" id="tags-tech"></div>
+        <input type="text" class="tag-input" id="input-tech" placeholder="Type & press Enter…" />
+      </div>
+    </div>
+
+    <div class="section-card">
+      <label class="field-label">Target Roles</label>
+      <div class="tag-input-wrap" id="tag-wrap-roles">
+        <div class="tags" id="tags-roles"></div>
+        <input type="text" class="tag-input" id="input-roles" placeholder="e.g. Backend Engineer, SWE…" />
+      </div>
+    </div>
+
+    <div class="section-card two-col">
+      <div>
+        <label class="field-label">Experience Level</label>
+        <div class="radio-group" id="radio-exp">
+          <label><input type="radio" name="exp" value="entry" /> Entry</label>
+          <label><input type="radio" name="exp" value="mid" checked /> Mid</label>
+          <label><input type="radio" name="exp" value="senior" /> Senior</label>
+          <label><input type="radio" name="exp" value="lead" /> Lead</label>
+        </div>
+      </div>
+      <div>
+        <label class="field-label">Work Mode</label>
+        <div class="radio-group" id="radio-mode">
+          <label><input type="radio" name="mode" value="any" checked /> Any</label>
+          <label><input type="radio" name="mode" value="remote" /> Remote</label>
+          <label><input type="radio" name="mode" value="hybrid" /> Hybrid</label>
+          <label><input type="radio" name="mode" value="onsite" /> Onsite</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <label class="field-label">Job Type</label>
+      <div class="checkbox-group" id="check-jobtype">
+        <label><input type="checkbox" value="full-time" checked /> Full-time</label>
+        <label><input type="checkbox" value="part-time" /> Part-time</label>
+        <label><input type="checkbox" value="contract" /> Contract</label>
+        <label><input type="checkbox" value="internship" /> Internship</label>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <label class="field-label">Excluded Keywords <span class="hint">(auto-skip if found in job)</span></label>
+      <div class="tag-input-wrap" id="tag-wrap-excluded">
+        <div class="tags" id="tags-excluded"></div>
+        <input type="text" class="tag-input" id="input-excluded" placeholder="e.g. unpaid, commission…" />
+      </div>
+    </div>
+
+    <button id="save-prefs-btn" class="primary-btn">Save Preferences</button>
+    <p id="save-msg" class="status-msg"></p>
+  </section>
+
+  <!-- ───────────── SETTINGS TAB ───────────── -->
+  <section id="tab-settings" class="tab-content hidden">
+
+    <div class="section-card">
+      <p class="settings-group-label">Backend</p>
+      <label class="field-label">Backend URL</label>
+      <input type="text" id="setting-backend-url" placeholder="http://localhost:8000" />
+      <p class="setting-hint">Change this if you've deployed the backend remotely.</p>
+    </div>
+
+    <div class="section-card">
+      <p class="settings-group-label">API Keys <span class="hint">(optional — overrides server env vars)</span></p>
+
+      <label class="field-label">Anthropic API Key</label>
+      <div class="key-row">
+        <input type="password" id="setting-anthropic-key" placeholder="sk-ant-…" autocomplete="off" />
+        <button class="reveal-btn" data-target="setting-anthropic-key">Show</button>
+      </div>
+
+      <label class="field-label" style="margin-top:10px">xAI API Key</label>
+      <div class="key-row">
+        <input type="password" id="setting-xai-key" placeholder="xai-…" autocomplete="off" />
+        <button class="reveal-btn" data-target="setting-xai-key">Show</button>
+      </div>
+
+      <p class="setting-hint">Keys are stored only in your browser and sent as request headers to your backend.</p>
+    </div>
+
+    <div class="section-card">
+      <p class="settings-group-label">Analysis</p>
+
+      <label class="field-label">Default LLM Provider</label>
+      <select id="setting-default-provider">
+        <option value="claude">Claude (Anthropic)</option>
+        <option value="grok">Grok (xAI)</option>
+      </select>
+
+      <div class="slider-row">
+        <label class="field-label">Apply Threshold <span id="threshold-display" class="threshold-val">60</span></label>
+        <input type="range" id="setting-threshold" min="0" max="100" step="5" value="60" />
+        <p class="setting-hint">Only recommend "Apply" when ATS score is at or above this value.</p>
+      </div>
+
+      <label class="toggle-row">
+        <span class="field-label" style="margin:0">Auto-open on job pages</span>
+        <span class="toggle-wrap">
+          <input type="checkbox" id="setting-auto-open" />
+          <span class="toggle-track"><span class="toggle-thumb"></span></span>
+        </span>
+      </label>
+      <p class="setting-hint">Automatically open the side panel when you navigate to a job posting.</p>
+    </div>
+
+    <button id="save-settings-btn" class="primary-btn">Save Settings</button>
+    <p id="settings-msg" class="status-msg"></p>
+  </section>
+
+  <script type="module" src="sidepanel.js"></script>
+</body>
+</html>

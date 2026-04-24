@@ -1,0 +1,42 @@
+{
+  "manifest_version": 3,
+  "name": "JobChrome",
+  "version": "1.0.0",
+  "description": "Analyze job postings against your resume with ATS scoring and apply recommendations.",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage",
+    "sidePanel"
+  ],
+  "host_permissions": [
+    "https://www.linkedin.com/*",
+    "https://www.indeed.com/*"
+  ],
+  "action": {
+    "default_title": "JobChrome"
+  },
+  "side_panel": {
+    "default_path": "sidepanel/sidepanel.html"
+  },
+  "background": {
+    "service_worker": "background/service_worker.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.linkedin.com/jobs/*",
+        "https://www.indeed.com/viewjob*",
+        "https://www.indeed.com/jobs*"
+      ],
+      "js": ["content_scripts/index.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "16": "assets/icon16.png",
+    "48": "assets/icon48.png",
+    "128": "assets/icon128.png"
+  }
+}
