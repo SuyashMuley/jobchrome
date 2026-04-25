@@ -26,4 +26,4 @@ class AnalyzeRequest(BaseModel):
     resume_text: str
     job: JobInput
     preferences: UserPreferences = Field(default_factory=UserPreferences)
-    provider: Literal["claude", "grok"] = "claude"
+    provider: Literal["claude", "grok", "groq"] = "groq"

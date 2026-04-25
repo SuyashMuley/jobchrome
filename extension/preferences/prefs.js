@@ -10,8 +10,9 @@ export const DEFAULT_PREFS = {
 
 export const DEFAULT_SETTINGS = {
   backend_url: "http://localhost:8000",
-  default_provider: "claude",
+  default_provider: "groq",
   anthropic_api_key: "",
+  groq_api_key: "",
   xai_api_key: "",
   ats_threshold: 60,
   auto_open: false,

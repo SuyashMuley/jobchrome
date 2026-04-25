@@ -44,6 +44,11 @@ ANALYSIS_TOOL_SCHEMA = {
                 "type": "string",
                 "description": "Cold email body. Empty string if cold_email_recommended is false."
             },
+            "tailoring_suggestions": {
+                "type": "array",
+                "items": {"type": "string"},
+                "description": "3-5 specific, actionable resume improvements for this job. Each item should name what to add/change and why, e.g. 'Add Kubernetes to skills — mentioned 4× in job description' or 'Reframe infrastructure work to highlight cost savings — role emphasizes financial impact'. Empty array if recommendation is skip."
+            },
             "recruiter_search_template": {
                 "type": "string",
                 "description": "LinkedIn People Search query string to find recruiters at this company, e.g. 'recruiter OR \"talent acquisition\" \"CompanyName\" Location'"
@@ -51,6 +56,7 @@ ANALYSIS_TOOL_SCHEMA = {
         },
         "required": [
             "ats_score", "ats_breakdown", "recommendation", "reasoning",
+            "tailoring_suggestions",
             "cold_email_recommended", "cold_email_subject", "cold_email_body",
             "recruiter_search_template"
         ]
@@ -85,6 +91,7 @@ Scoring guidelines:
 - ats_score: Weighted average — (keyword_match * 0.3 + skills_match * 0.3 + experience_match * 0.25 + preference_alignment * 0.15)
 - If ANY excluded keyword appears in the job description, set recommendation to "skip" and explain why
 - Only recommend cold email if recommendation is "apply" AND the role is competitive or at a target company
+- tailoring_suggestions: 3-5 concrete improvements, formatted as "Action — reason". Only populate when recommendation is "apply". Focus on the highest-leverage gaps: missing keywords, missing skills listed as required, experience framing, or quantification opportunities.
 """
 
 

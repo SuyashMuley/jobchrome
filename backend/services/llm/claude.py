@@ -61,6 +61,7 @@ def _parse_tool_input(data: dict, provider: str) -> AnalyzeResponse:
         ats_breakdown=breakdown,
         recommendation=data["recommendation"],
         reasoning=data["reasoning"],
+        tailoring_suggestions=data.get("tailoring_suggestions", []),
         cold_email=cold_email,
         recruiter_search_template=data["recruiter_search_template"],
         provider_used=provider,

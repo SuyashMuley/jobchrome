@@ -104,12 +104,35 @@ function makeTagInput(inputId, tagsId) {
   return {
     getValues: () => [...values],
     setValues: (arr) => { values.length = 0; values.push(...arr); render(); },
+    addValue: (val) => { if (val && !values.includes(val)) { values.push(val); render(); } },
+    removeValue: (val) => { const i = values.indexOf(val); if (i !== -1) { values.splice(i, 1); render(); } },
+    hasValue: (val) => values.includes(val),
   };
 }
 
 const tagTech     = makeTagInput("input-tech",     "tags-tech");
 const tagRoles    = makeTagInput("input-roles",     "tags-roles");
 const tagExcluded = makeTagInput("input-excluded",  "tags-excluded");
+
+// Map data-tag attribute → tag controller
+const TAG_MAP = { tech: tagTech, roles: tagRoles };
+
+// ── Preset chips for Tech Stack & Target Roles ─────────────────
+document.querySelectorAll(".preset-chips .chip").forEach((chip) => {
+  const tag = TAG_MAP[chip.closest(".preset-chips").dataset.tag];
+  if (!tag) return;
+
+  chip.addEventListener("click", () => {
+    const val = chip.dataset.value;
+    if (tag.hasValue(val)) {
+      tag.removeValue(val);
+      chip.classList.remove("active");
+    } else {
+      tag.addValue(val);
+      chip.classList.add("active");
+    }
+  });
+});
 
 // ── Domain chips ───────────────────────────────────────────────
 document.querySelectorAll("#chips-domains .chip").forEach((chip) => {
@@ -151,12 +174,12 @@ document.getElementById("setting-threshold").addEventListener("input", (e) => {
   document.getElementById("threshold-display").textContent = e.target.value;
 });
 
-// ── Collapsible cold email ─────────────────────────────────────
-document.getElementById("cold-email-toggle").addEventListener("click", () => {
-  const body = document.getElementById("cold-email-body");
-  const chevron = document.querySelector("#cold-email-toggle .chevron");
-  body.classList.toggle("hidden");
-  chevron.classList.toggle("open");
+// ── Collapsible sections ───────────────────────────────────────
+["cold-email", "tailoring"].forEach((id) => {
+  document.getElementById(`${id}-toggle`).addEventListener("click", () => {
+    document.getElementById(`${id}-body`).classList.toggle("hidden");
+    document.querySelector(`#${id}-toggle .chevron`).classList.toggle("open");
+  });
 });
 
 // ── Analyze button ─────────────────────────────────────────────
@@ -199,7 +222,9 @@ function renderResults(data) {
   const offset = 113.1 - (score / 100) * 113.1;
   const fill = document.getElementById("score-fill");
   fill.style.strokeDashoffset = offset;
-  fill.className = "fill " + (score >= 70 ? "green" : score >= 50 ? "yellow" : "red");
+  // SVG elements use setAttribute — .className is an SVGAnimatedString (read-only string setter)
+  const ringColor = score >= 70 ? "green" : score >= 50 ? "yellow" : "red";
+  fill.setAttribute("class", `fill ${ringColor}`);
 
   const badge = document.getElementById("rec-badge");
   badge.textContent = effectiveRec === "apply" ? "✓ Apply" : "✕ Skip";
@@ -214,6 +239,22 @@ function renderResults(data) {
   setBar("skills",  data.ats_breakdown.skills_match);
   setBar("exp",     data.ats_breakdown.experience_match);
   setBar("pref",    data.ats_breakdown.preference_alignment);
+
+  const tailoringCard = document.getElementById("tailoring-card");
+  const tailoringBody = document.getElementById("tailoring-body");
+  const suggestions = data.tailoring_suggestions ?? [];
+  if (suggestions.length > 0) {
+    tailoringCard.classList.remove("hidden");
+    tailoringBody.innerHTML = "";
+    suggestions.forEach((s) => {
+      const p = document.createElement("p");
+      p.className = "suggestion-item";
+      p.textContent = s;
+      tailoringBody.appendChild(p);
+    });
+  } else {
+    tailoringCard.classList.add("hidden");
+  }
 
   const coldCard = document.getElementById("cold-email-card");
   if (effectiveRec === "apply" && data.cold_email?.recommended) {
@@ -261,6 +302,7 @@ document.getElementById("save-settings-btn").addEventListener("click", async () 
     backend_url:       document.getElementById("setting-backend-url").value.trim() || DEFAULT_SETTINGS.backend_url,
     default_provider:  document.getElementById("setting-default-provider").value,
     anthropic_api_key: document.getElementById("setting-anthropic-key").value.trim(),
+    groq_api_key:      document.getElementById("setting-groq-key").value.trim(),
     xai_api_key:       document.getElementById("setting-xai-key").value.trim(),
     ats_threshold:     Number(document.getElementById("setting-threshold").value),
     auto_open:         document.getElementById("setting-auto-open").checked,
@@ -294,6 +336,12 @@ async function init() {
   setSelectedDomains(p.domains);
   tagTech.setValues(p.tech_stack);
   tagRoles.setValues(p.target_roles);
+
+  // Sync preset chip active states to match loaded values
+  document.querySelectorAll(".preset-chips .chip").forEach((chip) => {
+    const tag = TAG_MAP[chip.closest(".preset-chips").dataset.tag];
+    if (tag) chip.classList.toggle("active", tag.hasValue(chip.dataset.value));
+  });
   const expEl = document.querySelector(`input[name="exp"][value="${p.experience_level}"]`);
   if (expEl) expEl.checked = true;
   const modeEl = document.querySelector(`input[name="mode"][value="${p.work_mode}"]`);
@@ -307,6 +355,7 @@ async function init() {
   document.getElementById("setting-backend-url").value       = s.backend_url;
   document.getElementById("setting-default-provider").value  = s.default_provider;
   document.getElementById("setting-anthropic-key").value     = s.anthropic_api_key;
+  document.getElementById("setting-groq-key").value          = s.groq_api_key;
   document.getElementById("setting-xai-key").value           = s.xai_api_key;
   document.getElementById("setting-threshold").value         = s.ats_threshold;
   document.getElementById("threshold-display").textContent   = s.ats_threshold;

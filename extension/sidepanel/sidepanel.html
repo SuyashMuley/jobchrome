@@ -36,6 +36,7 @@
       <div class="row">
         <label class="field-label" style="margin:0">LLM</label>
         <select id="provider-select">
+          <option value="groq">Groq — Llama 3.3 (free)</option>
           <option value="claude">Claude (Anthropic)</option>
           <option value="grok">Grok (xAI)</option>
         </select>
@@ -85,6 +86,17 @@
             <div class="bar-wrap"><div class="bar" id="bar-pref"></div></div>
             <span class="bar-val" id="val-pref">0</span>
           </div>
+        </div>
+      </div>
+
+      <!-- Resume Tailoring -->
+      <div class="section-card hidden" id="tailoring-card">
+        <div class="collapsible-header" id="tailoring-toggle">
+          <span>Resume Tailoring</span>
+          <span class="chevron">▸</span>
+        </div>
+        <div class="collapsible-body hidden" id="tailoring-body">
+          <!-- populated by JS -->
         </div>
       </div>
 
@@ -139,7 +151,80 @@
 
     <div class="section-card">
       <label class="field-label">Tech Stack</label>
-      <div class="tag-input-wrap" id="tag-wrap-tech">
+
+      <p class="preset-group-label">Languages</p>
+      <div class="chips-wrap preset-chips" data-tag="tech">
+        <button class="chip" data-value="Python">Python</button>
+        <button class="chip" data-value="JavaScript">JavaScript</button>
+        <button class="chip" data-value="TypeScript">TypeScript</button>
+        <button class="chip" data-value="Java">Java</button>
+        <button class="chip" data-value="Go">Go</button>
+        <button class="chip" data-value="Rust">Rust</button>
+        <button class="chip" data-value="C++">C++</button>
+        <button class="chip" data-value="C#">C#</button>
+        <button class="chip" data-value="Swift">Swift</button>
+        <button class="chip" data-value="Kotlin">Kotlin</button>
+        <button class="chip" data-value="Ruby">Ruby</button>
+        <button class="chip" data-value="Scala">Scala</button>
+        <button class="chip" data-value="R">R</button>
+      </div>
+
+      <p class="preset-group-label">Frameworks & Libraries</p>
+      <div class="chips-wrap preset-chips" data-tag="tech">
+        <button class="chip" data-value="React">React</button>
+        <button class="chip" data-value="Next.js">Next.js</button>
+        <button class="chip" data-value="Vue">Vue</button>
+        <button class="chip" data-value="Angular">Angular</button>
+        <button class="chip" data-value="Node.js">Node.js</button>
+        <button class="chip" data-value="FastAPI">FastAPI</button>
+        <button class="chip" data-value="Django">Django</button>
+        <button class="chip" data-value="Flask">Flask</button>
+        <button class="chip" data-value="Spring Boot">Spring Boot</button>
+        <button class="chip" data-value="Express">Express</button>
+        <button class="chip" data-value=".NET">.NET</button>
+        <button class="chip" data-value="GraphQL">GraphQL</button>
+      </div>
+
+      <p class="preset-group-label">Data / ML</p>
+      <div class="chips-wrap preset-chips" data-tag="tech">
+        <button class="chip" data-value="PyTorch">PyTorch</button>
+        <button class="chip" data-value="TensorFlow">TensorFlow</button>
+        <button class="chip" data-value="Pandas">Pandas</button>
+        <button class="chip" data-value="NumPy">NumPy</button>
+        <button class="chip" data-value="Scikit-learn">Scikit-learn</button>
+        <button class="chip" data-value="Spark">Spark</button>
+        <button class="chip" data-value="Kafka">Kafka</button>
+        <button class="chip" data-value="Airflow">Airflow</button>
+        <button class="chip" data-value="dbt">dbt</button>
+      </div>
+
+      <p class="preset-group-label">Databases</p>
+      <div class="chips-wrap preset-chips" data-tag="tech">
+        <button class="chip" data-value="PostgreSQL">PostgreSQL</button>
+        <button class="chip" data-value="MySQL">MySQL</button>
+        <button class="chip" data-value="MongoDB">MongoDB</button>
+        <button class="chip" data-value="Redis">Redis</button>
+        <button class="chip" data-value="DynamoDB">DynamoDB</button>
+        <button class="chip" data-value="Elasticsearch">Elasticsearch</button>
+        <button class="chip" data-value="Snowflake">Snowflake</button>
+        <button class="chip" data-value="BigQuery">BigQuery</button>
+      </div>
+
+      <p class="preset-group-label">Cloud & DevOps</p>
+      <div class="chips-wrap preset-chips" data-tag="tech">
+        <button class="chip" data-value="AWS">AWS</button>
+        <button class="chip" data-value="GCP">GCP</button>
+        <button class="chip" data-value="Azure">Azure</button>
+        <button class="chip" data-value="Docker">Docker</button>
+        <button class="chip" data-value="Kubernetes">Kubernetes</button>
+        <button class="chip" data-value="Terraform">Terraform</button>
+        <button class="chip" data-value="CI/CD">CI/CD</button>
+        <button class="chip" data-value="Linux">Linux</button>
+        <button class="chip" data-value="Git">Git</button>
+      </div>
+
+      <p class="preset-group-label">Custom</p>
+      <div class="tag-input-wrap">
         <div class="tags" id="tags-tech"></div>
         <input type="text" class="tag-input" id="input-tech" placeholder="Type & press Enter…" />
       </div>
@@ -147,9 +232,51 @@
 
     <div class="section-card">
       <label class="field-label">Target Roles</label>
-      <div class="tag-input-wrap" id="tag-wrap-roles">
+
+      <p class="preset-group-label">Engineering</p>
+      <div class="chips-wrap preset-chips" data-tag="roles">
+        <button class="chip" data-value="Software Engineer">Software Engineer</button>
+        <button class="chip" data-value="Senior Software Engineer">Senior SWE</button>
+        <button class="chip" data-value="Backend Engineer">Backend Engineer</button>
+        <button class="chip" data-value="Frontend Engineer">Frontend Engineer</button>
+        <button class="chip" data-value="Full Stack Engineer">Full Stack</button>
+        <button class="chip" data-value="Mobile Engineer">Mobile Engineer</button>
+        <button class="chip" data-value="Embedded Engineer">Embedded Engineer</button>
+      </div>
+
+      <p class="preset-group-label">Data & ML</p>
+      <div class="chips-wrap preset-chips" data-tag="roles">
+        <button class="chip" data-value="Data Engineer">Data Engineer</button>
+        <button class="chip" data-value="Data Scientist">Data Scientist</button>
+        <button class="chip" data-value="ML Engineer">ML Engineer</button>
+        <button class="chip" data-value="AI Engineer">AI Engineer</button>
+        <button class="chip" data-value="Data Analyst">Data Analyst</button>
+        <button class="chip" data-value="Research Engineer">Research Engineer</button>
+      </div>
+
+      <p class="preset-group-label">Infrastructure & Security</p>
+      <div class="chips-wrap preset-chips" data-tag="roles">
+        <button class="chip" data-value="DevOps Engineer">DevOps Engineer</button>
+        <button class="chip" data-value="Platform Engineer">Platform Engineer</button>
+        <button class="chip" data-value="SRE">SRE</button>
+        <button class="chip" data-value="Security Engineer">Security Engineer</button>
+        <button class="chip" data-value="Cloud Engineer">Cloud Engineer</button>
+      </div>
+
+      <p class="preset-group-label">Co-op / Internship</p>
+      <div class="chips-wrap preset-chips" data-tag="roles">
+        <button class="chip" data-value="Software Engineer Intern">SWE Intern</button>
+        <button class="chip" data-value="Software Engineer Co-op">SWE Co-op</button>
+        <button class="chip" data-value="Data Science Intern">Data Science Intern</button>
+        <button class="chip" data-value="ML Intern">ML Intern</button>
+        <button class="chip" data-value="Backend Intern">Backend Intern</button>
+        <button class="chip" data-value="Frontend Intern">Frontend Intern</button>
+      </div>
+
+      <p class="preset-group-label">Custom</p>
+      <div class="tag-input-wrap">
         <div class="tags" id="tags-roles"></div>
-        <input type="text" class="tag-input" id="input-roles" placeholder="e.g. Backend Engineer, SWE…" />
+        <input type="text" class="tag-input" id="input-roles" placeholder="Type & press Enter…" />
       </div>
     </div>
 
@@ -215,6 +342,12 @@
         <button class="reveal-btn" data-target="setting-anthropic-key">Show</button>
       </div>
 
+      <label class="field-label" style="margin-top:10px">Groq API Key <span class="hint">(free at console.groq.com)</span></label>
+      <div class="key-row">
+        <input type="password" id="setting-groq-key" placeholder="gsk_…" autocomplete="off" />
+        <button class="reveal-btn" data-target="setting-groq-key">Show</button>
+      </div>
+
       <label class="field-label" style="margin-top:10px">xAI API Key</label>
       <div class="key-row">
         <input type="password" id="setting-xai-key" placeholder="xai-…" autocomplete="off" />
@@ -229,6 +362,7 @@
 
       <label class="field-label">Default LLM Provider</label>
       <select id="setting-default-provider">
+        <option value="groq">Groq — Llama 3.3 (free)</option>
         <option value="claude">Claude (Anthropic)</option>
         <option value="grok">Grok (xAI)</option>
       </select>

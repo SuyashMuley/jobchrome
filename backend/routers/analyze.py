@@ -12,9 +12,10 @@ async def analyze(
     request: AnalyzeRequest,
     x_anthropic_key: Annotated[str | None, Header()] = None,
     x_xai_key: Annotated[str | None, Header()] = None,
+    x_groq_key: Annotated[str | None, Header()] = None,
 ) -> AnalyzeResponse:
     try:
-        return await analyze_job(request, anthropic_key=x_anthropic_key, xai_key=x_xai_key)
+        return await analyze_job(request, anthropic_key=x_anthropic_key, xai_key=x_xai_key, groq_key=x_groq_key)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:

@@ -1,5 +1,5 @@
 from typing import Literal
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class ATSBreakdown(BaseModel):
@@ -20,6 +20,7 @@ class AnalyzeResponse(BaseModel):
     ats_breakdown: ATSBreakdown
     recommendation: Literal["apply", "skip"]
     reasoning: str
+    tailoring_suggestions: list[str] = Field(default_factory=list)
     cold_email: ColdEmail
     recruiter_search_template: str
     provider_used: str

@@ -7,8 +7,9 @@ async def analyze_job(
     request: AnalyzeRequest,
     anthropic_key: str | None = None,
     xai_key: str | None = None,
+    groq_key: str | None = None,
 ) -> AnalyzeResponse:
-    provider = get_provider(request.provider, anthropic_key=anthropic_key, xai_key=xai_key)
+    provider = get_provider(request.provider, anthropic_key=anthropic_key, xai_key=xai_key, groq_key=groq_key)
     return await provider.analyze(
         resume_text=request.resume_text,
         job=request.job,

@@ -310,6 +310,17 @@ select { cursor: pointer; }
 }
 .recruiter-link:hover { text-decoration: underline; }
 
+/* ── Preset group label ── */
+.preset-group-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--muted);
+  margin-top: 6px;
+  margin-bottom: 2px;
+}
+
 /* ── Chips ── */
 .chips-wrap { display: flex; flex-wrap: wrap; gap: 7px; }
 .chip {
@@ -470,6 +481,22 @@ input[type="range"]::-webkit-slider-thumb {
 }
 .toggle-wrap input:checked + .toggle-track { background: var(--accent-glow); border-color: var(--accent); }
 .toggle-wrap input:checked + .toggle-track .toggle-thumb { transform: translateX(16px); background: var(--accent); }
+
+/* ── Tailoring suggestions ── */
+.suggestion-item {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text);
+  padding-left: 16px;
+  position: relative;
+}
+.suggestion-item::before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-weight: 700;
+}
 
 /* ── Radio / Checkbox ── */
 .radio-group, .checkbox-group {
